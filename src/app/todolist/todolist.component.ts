@@ -7,7 +7,11 @@ import { NgForm } from '@angular/forms';
   styleUrls: ['./todolist.component.css']
 })
 export class TodolistComponent implements OnInit {
-  taskArray = [{ taskName: 'Brush teeth', isCompleted: false }];
+  taskArray = [
+    { taskId: 1, taskName: 'Brush teeth', isCompleted: false }
+  ];
+  editedTaskName: string = '';
+
 
   constructor() { }
 
@@ -15,15 +19,23 @@ export class TodolistComponent implements OnInit {
   }
 
   onSubmit(form: NgForm) {
-    console.log(form);
-
-    this.taskArray.push({
-      taskName: form.controls['task'].value,
-      isCompleted: false
-    })
-
+    if (this.editingIndex === -1) {
+      // Crear una nueva tarea
+      this.taskArray.push({
+        taskId: this.taskArray.length + 1,
+        taskName: form.controls['task'].value,
+        isCompleted: false
+      });
+    } else {
+      // Editar una tarea existente
+      this.taskArray[this.editingIndex].taskName = form.controls['task'].value;
+      // Restablecer el índice de edición
+      this.editingIndex = -1;
+    }
+  
     form.reset();
   }
+  
 
   onDelete(index: number) {
     console.log(index);
@@ -36,5 +48,19 @@ export class TodolistComponent implements OnInit {
 
     this.taskArray[index].isCompleted = !this.taskArray[index].isCompleted;
   }
+
+
+
+
+
+  editingIndex: number = -1;
+
+onEdit(index: number) {
+  this.editingIndex = index;
+  const task = this.taskArray[index];
+  // Actualizar el valor del campo de entrada con el nombre de la tarea seleccionada
+  // Puedes usar una variable de la clase para almacenar el nombre de la tarea actualmente editada
+}
+
 
 }
